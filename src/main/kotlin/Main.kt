@@ -5,24 +5,38 @@ private val logger: Logger = LoggerFactory.getLogger("Main")
 
 fun main() {
 
-    val pronostics = Loader("src/main/resources/pronos/pronos-01.txt").getPronostics()
+    simulate(
+        filePath = "src/main/resources/pronos/pronos-01.txt",
+        occurences = 1,
+        topPlaceSynthese = 2
+    )
 
-    logger.info("Loaded : $pronostics")
-    logger.info("Synthese : ${pronostics.toSynthese()}")
+}
 
-    val combinaisons1 = pronostics[0].toCombinaisons()
-    logger.info("${combinaisons1.size} combinaisons 1er prono : $combinaisons1")
-    val combinaisons2 = pronostics[1].toCombinaisons()
-    logger.info("${combinaisons2.size} combinaisons 2eme prono : $combinaisons2")
-    val combinaisons3 = pronostics[2].toCombinaisons()
-    logger.info("${combinaisons3.size} combinaisons 3eme prono : $combinaisons3")
+private fun simulate(filePath: String, occurences: Int, topPlaceSynthese: Int) {
+    val pronostics = Loader(filePath).getPronostics()
+    logger.info("Chargement des pronostics : \n${pronostics.prettyPrint()}")
 
-    val allCombinaisons  = combinaisons1 + combinaisons2 + combinaisons3
+    val synthese = pronostics.toSynthese()
+    logger.info("\nSynthese : \n${synthese.lignes.prettyPrint()}\n")
+
+    val allCombinaisons = pronostics.flatMap {
+        val combinaisons = it.toCombinaisons()
+        logger.info("${combinaisons.size} combinaisons pour $it, combinaisons -> $combinaisons")
+        combinaisons
+    }
 
     logger.info("${allCombinaisons.size} combinaisons en tout")
 
-    val limit = 1
-    logger.info("${allCombinaisons.limitOccurencesTo(limit).size} combinaisons données moins de $limit fois")
-    val limit2 = 2
-    logger.info("${allCombinaisons.limitOccurencesTo(limit2).size} combinaisons données moins de $limit2 fois")
+    val combinationsFilteredByPopularity = allCombinaisons.limitOccurencesTo(occurences)
+    logger.info("\n${combinationsFilteredByPopularity.size} combinaisons données au plus $occurences fois")
+
+    val combinationsFilteredByPopularityAndSynthese =
+        combinationsFilteredByPopularity.filterWithTopPlaceFromSynthese(topPlaceSynthese, synthese)
+
+    logger.info("\n${combinationsFilteredByPopularityAndSynthese.size} combinaisons après filtre par la synthèse (top $topPlaceSynthese)")
+
+    logger.info("\nCombinaisons finales: \n${combinationsFilteredByPopularityAndSynthese.prettyPrint()}")
 }
+
+fun List<Any>.prettyPrint() = this.joinToString(separator = "\n") { "  $it" }

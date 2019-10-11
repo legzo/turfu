@@ -5,7 +5,13 @@
         </encoder>
     </appender>
 
+    <appender name="STDOUT-simple" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%m%n</pattern>
+        </encoder>
+    </appender>
+
     <root level="INFO">
-        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="STDOUT-simple"/>
     </root>
 </configuration>

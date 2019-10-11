@@ -4,7 +4,9 @@ data class Pronostic(
     val id: String,
     val chevaux: List<Int>
 ) {
-    fun toCombinaisons() = Generator.combination(chevaux).simple(4).toSet().map {
-        Combinaison(it.toSet())
-    }
+    fun toCombinaisons() = Generator
+        .combination(chevaux)
+        .simple(4)
+        .toSet()
+        .map { Combinaison(it.toSet()) }
 }
