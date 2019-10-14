@@ -6,9 +6,9 @@ private val logger: Logger = LoggerFactory.getLogger("Main")
 fun main() {
 
     simulate(
-        filePath = "src/main/resources/pronos/pronos-01.txt",
-        occurences = 1,
-        topPlaceSynthese = 2
+        filePath = "src/main/resources/pronos/pronos-real.txt",
+        occurences = 3,
+        topPlaceSynthese = 5
     )
 
 }
@@ -22,7 +22,7 @@ private fun simulate(filePath: String, occurences: Int, topPlaceSynthese: Int) {
 
     val allCombinaisons = pronostics.flatMap {
         val combinaisons = it.toCombinaisons()
-        logger.info("${combinaisons.size} combinaisons pour $it, combinaisons -> $combinaisons")
+        logger.debug("${combinaisons.size} combinaisons pour $it, combinaisons -> $combinaisons")
         combinaisons
     }
 
@@ -39,4 +39,4 @@ private fun simulate(filePath: String, occurences: Int, topPlaceSynthese: Int) {
     logger.info("\nCombinaisons finales: \n${combinationsFilteredByPopularityAndSynthese.prettyPrint()}")
 }
 
-fun List<Any>.prettyPrint() = this.joinToString(separator = "\n") { "  $it" }
+private fun List<Any>.prettyPrint() = this.joinToString(separator = "\n") { "  $it" }
