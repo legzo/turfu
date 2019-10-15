@@ -7,13 +7,19 @@ fun main() {
 
     simulate(
         filePath = "src/main/resources/pronos/pronos-real.txt",
-        occurences = 3,
-        topPlaceSynthese = 5
+        occurences = 2,
+        topPlaceSynthese = 2,
+        nonPartants = listOf(7)
     )
 
 }
 
-private fun simulate(filePath: String, occurences: Int, topPlaceSynthese: Int) {
+private fun simulate(
+    filePath: String,
+    occurences: Int,
+    topPlaceSynthese: Int,
+    nonPartants: List<Int> = listOf()
+) {
     val pronostics = Loader(filePath).getPronostics()
     logger.info("Chargement des pronostics : \n${pronostics.prettyPrint()}")
 
@@ -36,7 +42,10 @@ private fun simulate(filePath: String, occurences: Int, topPlaceSynthese: Int) {
 
     logger.info("\n${combinationsFilteredByPopularityAndSynthese.size} combinaisons après filtre par la synthèse (top $topPlaceSynthese)")
 
-    logger.info("\nCombinaisons finales: \n${combinationsFilteredByPopularityAndSynthese.prettyPrint()}")
+    val combinaisonsFinales = combinationsFilteredByPopularityAndSynthese
+        .excludeNonPartants(nonPartants)
+
+    logger.info("\nCombinaisons finales: \n${combinaisonsFinales.prettyPrint()}")
 }
 
 private fun List<Any>.prettyPrint() = this.joinToString(separator = "\n") { "  $it" }

@@ -14,3 +14,7 @@ fun List<Combinaison>.filterWithTopPlaceFromSynthese(numberOfPlaces: Int, synthe
             synthese.isHorseInTopPlaces(cheval = cheval, numberOfPlaces = numberOfPlaces)
         } >= 2
     }
+
+
+fun List<Combinaison>.excludeNonPartants(nonPartants: List<Int>) =
+    this.filter { it.chevaux.none { cheval -> cheval in nonPartants } }
